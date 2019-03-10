@@ -2,6 +2,8 @@ import json
 import psycopg2
 import string
 
+from stop_words import get_stop_words
+
 from snowball import Stemmer
 
 
@@ -22,11 +24,7 @@ def prepare_words(sentence):
     # removing punctuation, such as "foo," or "bar!"
     words = [''.join(c for c in w if c not in punctuation) for w in words]
 
-    # getting stop words from stopwords-ru.json
-    stop_words = []
-    with open('node_modules/stopwords-ru/stopwords-ru.json') as sw:
-        for line in sw:
-            stop_words = json.loads(line)
+    stop_words = get_stop_words('ru')
 
     clear_words = []
     for word in words:
