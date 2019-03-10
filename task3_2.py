@@ -1,4 +1,3 @@
-import json
 import psycopg2
 import string
 
@@ -36,7 +35,7 @@ def prepare_words(sentence):
     for word in clear_words:
         porter_stemed.add(snb.stem(word))
 
-    return clear_words
+    return porter_stemed
 
 
 def search(sentence):
@@ -48,7 +47,11 @@ def search(sentence):
     for word in words:
         cur.execute("""SELECT article_id from article_term where term_id = 
         (select term_id from terms_list where terms_list.term_text = %s)""", (word,))
+
+        # list of sets with article ids
         arts = cur.fetchall()
+
+        # list of article ids
         clear_arts = []
         for art in arts:
             clear_arts.append(art[0])
@@ -60,10 +63,17 @@ def search(sentence):
     for word, articles in sorted_words:
         if len(articles) > 0:
             result_articles = intersection(result_articles, articles)
-    return result_articles
+
+    article_urls = []
+    for article_id in result_articles:
+        cur.execute('select url from articles where id = %s', (article_id,))
+        urls_tuple = cur.fetchall()
+        for el in urls_tuple:
+            article_urls.append(el[0])
+    return article_urls
 
 
 if __name__ == '__main__':
     # sentence = input()
-    sentence = 'Поиск работы в it компании'
+    sentence = 'поиск работы в it-компании'
     print(search(sentence))
