@@ -1,8 +1,8 @@
-import json
 import string
 
 import psycopg2
 from pymystem3 import Mystem
+from stop_words import get_stop_words
 
 from snowball import Stemmer
 
@@ -28,10 +28,7 @@ for row in rows:
     words = set([w for w in words if w])
 
     # getting stop words from stopwords-ru.json
-    stop_words = []
-    with open('node_modules/stopwords-ru/stopwords-ru.json') as sw:
-        for line in sw:
-            stop_words = json.loads(line)
+    stop_words = get_stop_words('ru')
 
     # removing stop words
     clear_words = []
