@@ -8,5 +8,7 @@ CREATE TABLE article_term (
   term_id uuid REFERENCES terms_list (term_id)
 );
 
+ALTER TABLE article_term ADD UNIQUE (article_id, term_id)
+
 -- sorted index for term_text
 CREATE index terms_list_index on terms_list (term_text);

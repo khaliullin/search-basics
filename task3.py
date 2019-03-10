@@ -20,5 +20,5 @@ for w in words:
     articles = cur.fetchall()
 
     for article in articles:
-        cur.execute('INSERT into article_term(article_id, term_id) values (%s, %s)', (article[0], word_id))
+        cur.execute('INSERT into article_term(article_id, term_id) values (%s, %s) on conflict do nothing', (article[0], word_id))
     conn.commit()
