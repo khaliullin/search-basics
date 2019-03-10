@@ -45,7 +45,7 @@ def search(sentence):
     words = prepare_words(sentence)
     articles = dict()
     for word in words:
-        cur.execute("""SELECT article_id from article_term where term_id = 
+        cur.execute("""SELECT distinct article_id from article_term where term_id = 
         (select term_id from terms_list where terms_list.term_text = %s)""", (word,))
 
         # list of sets with article ids
