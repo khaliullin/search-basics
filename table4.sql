@@ -1,0 +1,1 @@
+alter table article_term add column "tf-idf" double precision;
