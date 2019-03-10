@@ -24,8 +24,8 @@ for row in rows:
     # removing punctuation, such as "foo," or "bar!"
     words = [''.join(c for c in w if c not in punctuation) for w in words]
 
-    # removing empty words from list and making them unique
-    words = set([w for w in words if w])
+    # removing empty words from list
+    words = [w for w in words if w]
 
     # getting stop words from stopwords-ru.json
     stop_words = get_stop_words('ru')
@@ -37,18 +37,18 @@ for row in rows:
             clear_words.append(word)
 
     m = Mystem()
-    my_stemed = set()
+    my_stemed = []
     for word in clear_words:
-        my_stemed.add(m.lemmatize(word)[0])
+        my_stemed.append(m.lemmatize(word)[0])
 
     for word in my_stemed:
         cur.execute('INSERT INTO words_mystem(term, articles_id) VALUES (%s, %s)', (word, article_id))
     conn.commit()
 
     snb = Stemmer()
-    porter_stemed = set()
+    porter_stemed = []
     for word in clear_words:
-        porter_stemed.add(snb.stem(word))
+        porter_stemed.append(snb.stem(word))
 
     for word in porter_stemed:
         cur.execute('INSERT INTO  words_porter(term, articles_id) VALUES (%s, %s)', (word, article_id))
