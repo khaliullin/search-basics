@@ -36,7 +36,7 @@ def calculate():
                 tf_storage[(word, doc)] = 0
 
         cur.execute('select count(distinct articles_id) from words_porter where term = %s', (word,))
-        den = math.fabs(cur.fetchone()[0])
+        den = cur.fetchone()[0]
 
         idf_storage[word] = math.log(docs_len/den)
 
