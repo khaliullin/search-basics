@@ -38,14 +38,7 @@ def count_cos_measure(v1, v2):
     return num/den if den != 0 else 0
 
 
-def search_cos_idf(query, articles=None):
-    if not articles:
-        # searching in all articles if not given
-        cur.execute('select id from articles')
-        articles = [article[0] for article in cur.fetchall()]
-
-    words = prepare_words(query)
-
+def get_query_vector(words):
     # getting vector of idf for query
     words_vec = []
     for word in words:
@@ -53,6 +46,14 @@ def search_cos_idf(query, articles=None):
                     '(select term_id from terms_list where term_text = %s)', (word,))
         idf = cur.fetchone()
         words_vec.append(idf[0] if idf else 0)
+    return words_vec
+
+
+def search_cos_idf(words_vec, words, articles=None):
+    if not articles:
+        # searching in all articles if not given
+        cur.execute('select id from articles')
+        articles = [article[0] for article in cur.fetchall()]
 
     result = defaultdict(float)
 
@@ -76,7 +77,7 @@ def search_cos_idf(query, articles=None):
 
     result = sorted(result.items(), key=operator.itemgetter(1), reverse=True)
 
-    return result[:10]
+    return result
 
 
 if __name__ == '__main__':
@@ -84,5 +85,7 @@ if __name__ == '__main__':
     calculate_idf()
 
     query = 'Безопасность конфиденциальных данных сотрудников'
-    res = search_cos_idf(query)
-    print(res)
+    words = prepare_words(query)
+    query_vector = get_query_vector(words)
+    res = search_cos_idf(query_vector, words)
+    print(res[:10])
